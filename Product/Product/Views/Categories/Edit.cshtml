@@ -1,0 +1,73 @@
+﻿@using Product.Helpers;
+@model Product.Models.Category
+
+@using (Ajax.BeginForm(actionName: "Edit", controllerName: "Categories", null, ajaxOptions: new AjaxOptions { HttpMethod = "POST", OnSuccess = "", OnFailure = "" }, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="editCategoryModalLabel">Edit category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "col-form-label" })
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+        <hr />
+        @for (int i = 0; i < Model.Items.Count; i++)
+        {
+            var data_tag = "Items_" + @i + "__Image";
+
+            <div class="form-group">
+                @Html.HiddenFor(model => model.Items[i].ID)
+                @Html.HiddenFor(model => model.Items[i].CategoryID)
+                @Html.LabelFor(model => model.Items[i].Name, htmlAttributes: new { @class = "col-form-label" })
+                @Html.EditorFor(model => model.Items[i].Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Items[i].Name, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[i].Description, htmlAttributes: new { @class = "col-form-label" })
+                @Html.TextAreaFor(model => model.Items[i].Description, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Items[i].Description, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[i].Image, htmlAttributes: new { @class = "col-form-label" })
+                <br />
+                @Html.ImageFor(model => model.Items[i].Image, "", 200, 200)
+                <input id="file" name="file" type="file" data-tag="@data_tag" onchange="changeImage(this, event)" />
+                @Html.ValidationMessageFor(model => model.Items[i].Image, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Items[i].Image)
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[i].EntryDate, htmlAttributes: new { @class = "col-form-label" })
+                @Html.EditorFor(model => model.Items[i].EntryDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Items[i].EntryDate, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[i].Quantity, htmlAttributes: new { @class = "col-form-label" })
+                @Html.EditorFor(model => model.Items[i].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Items[i].Quantity, "", new { @class = "text-danger" })
+            </div>
+        }
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}

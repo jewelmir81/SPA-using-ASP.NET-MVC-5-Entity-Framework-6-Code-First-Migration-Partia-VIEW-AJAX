@@ -1,0 +1,72 @@
+﻿@model Product.Models.Category
+
+@using (Ajax.BeginForm(actionName: "Create", controllerName: "Categories", null, ajaxOptions: new AjaxOptions { HttpMethod = "POST", OnSuccess = "", OnFailure = "" }, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="modal-header">
+        <h5 class="modal-title" id="categoryModalLabel">Add new category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "col-form-label" })
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+        <br />
+        <div id="0">
+            <hr />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[0].Name, htmlAttributes: new { @class = "col-form-label" })
+                @Html.EditorFor(model => model.Items[0].Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Items[0].Name, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[0].Description, htmlAttributes: new { @class = "col-form-label" })
+                @Html.TextAreaFor(model => model.Items[0].Description, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Items[0].Description, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[0].Image, htmlAttributes: new { @class = "col-form-label" })
+                <br />
+                <img id="_0" src="~/Images/transparent_phone.jpg" width="300" data-tag="itemImageinCategory" />
+                <input id="Image" name="Image" type="file" data-tag="_0" onchange="changeImage(this, event)" />
+                @Html.ValidationMessageFor(model => model.Items[0].Image, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[0].EntryDate, htmlAttributes: new { @class = "col-form-label" })
+                @Html.EditorFor(model => model.Items[0].EntryDate, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Items[0].EntryDate, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <div class="form-group">
+                @Html.LabelFor(model => model.Items[0].Quantity, htmlAttributes: new { @class = "col-form-label" })
+                @Html.EditorFor(model => model.Items[0].Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Items[0].Quantity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <br />
+        <hr />
+        <div class="col-md-12">
+            <button id="addModelButton" type="button" class="btn btn-info btn-block">Add more product</button>
+        </div>
+        <input id="sl" type="hidden" value="0" />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+}

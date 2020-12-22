@@ -1,0 +1,190 @@
+﻿@model IEnumerable<Product.Models.Category>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div id="categoryDiv" class="col-md-2" style="overflow:scroll;">
+        <h2>Categories</h2>
+        <p>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#categoryModal">Create New</button>
+        </p>
+        @foreach (var item in Model)
+        {
+            <div class="card">
+                <div class="card-header">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@item.Items.Count products avaiailable.</h5>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-warning" data-toggle="modal" data-target="#editCategoryModal" onclick="editCategory(@item.ID)">Edit</button>&nbsp;&nbsp;
+                    <button class="btn btn-info" onclick="getDetails(@item.ID)">Details</button>&nbsp;&nbsp;
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteCategoryModal" onclick="deleteCategory(@item.ID)">Delete</button>
+                </div>
+            </div>
+            <br />
+        }
+
+    </div>
+    <div id="itemsDiv" class="col-md-10" style="overflow:scroll;">
+    </div>
+</div>
+
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @{
+                Html.RenderPartial("Create", new Product.Models.Category());
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="editCategoryModalContent" class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="deleteCategoryModalContent" class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="itemModalContent" class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="editItemModalContent" class="modal-content">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteItemModal" tabindex="-1" aria-labelledby="deleteItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="deletItemModalContent" class="modal-content">
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script>
+        $(document).ready(function () {
+            $("#categoryDiv").height($(window).height() * .85);
+            $("#itemsDiv").height($(window).height() * .85);
+
+            if (isNaN(@TempData["id"]) == false) {
+                var link = '@Url.Action("GetCategoryWiseItems", "Categories", new { id = @TempData["id"] })';
+                $("#itemsDiv").load(link);
+            }
+
+            $('#categoryModal').on('shown.bs.modal', function () {
+                $('#Name').trigger('focus');
+            });
+
+            $('#categoryModal').on('hidden.bs.modal', function (event) {
+                $("input[type=text]").val("");
+                $("input[type=number]").val("");
+                $("input[type=datetime-local]").val("");
+                $('#sl').val('0');
+
+                $("img[data-tag='itemImageinCategory']").each(function () {
+                    $(this).attr("src", "/Images/transparent_phone.jpg");
+                });
+
+                $("div").each(function () {
+                    if (parseInt(this.id) > 0) {
+                        this.remove();
+                    }
+                })
+            });
+
+            $('#addModelButton').on('click', function () {
+                var present_sl = parseInt($('#sl').val());
+                var next_sl = parseInt(present_sl) + 1;
+                var next_item = '<div id="' + next_sl + '">' + $('#' + present_sl).html() + '</div>';
+                next_item = next_item.split('_' + present_sl.toString()).join('_' + next_sl.toString());
+                next_item = next_item.split('[' + present_sl.toString() + ']').join('[' + next_sl.toString() + ']');
+                $('#' + present_sl).after(next_item);
+                $('#sl').val(next_sl);
+            });
+
+            $('#itemModal').on('hidden.bs.modal', function (event) {
+                $("input[type=text]").val("");
+                $("input[type=number]").val("");
+                $("input[type=datetime-local]").val("");
+            });
+        });
+
+        function editCategory(e) {
+            var link = '@Url.Action("Edit", "Categories", new { id = "-1" })';
+            link = link.replace("-1", e);
+            $("#editCategoryModalContent").load(link);
+        }
+
+        function deleteCategory(e) {
+            var link = '@Url.Action("Delete", "Categories", new { id = "-1" })';
+            link = link.replace("-1", e);
+            $("#deleteCategoryModalContent").load(link);
+        }
+
+        function getDetails(e) {
+            var link = '@Url.Action("GetCategoryWiseItems", "Categories", new { id = "-1" })';
+            link = link.replace("-1", e);
+            $("#itemsDiv").load(link);
+        }
+
+        function loadItem(e) {
+            var link = '@Url.Action("Create", "Items", new { id = "-1" })';
+            link = link.replace("-1", e);
+            $("#itemModalContent").load(link);
+        }
+
+        function editItem(e) {
+            var link = '@Url.Action("Edit", "Items", new { id = "-1" })';
+            link = link.replace("-1", e);
+            $("#editItemModalContent").load(link);
+        }
+
+        function deleteItem(e) {
+            var link = '@Url.Action("Delete", "Items", new { id = "-1" })';
+            link = link.replace("-1", e);
+            $("#deletItemModalContent").load(link);
+        }
+
+        var loadImage = function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var img = document.getElementById('itemImage');
+                img.src = URL.createObjectURL(event.target.files[0]);
+            }
+        }
+
+        var editImage = function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var img = document.querySelector('img[alt = "Edit Image"]')
+                img.src = URL.createObjectURL(event.target.files[0]);
+            }
+        }
+
+        var changeImage = function (obj, event) {
+            if (event.target.files && event.target.files[0]) {
+                console.log(obj.dataset.tag);
+                var img = document.getElementById(obj.dataset.tag);
+                img.src = URL.createObjectURL(event.target.files[0]);
+            }
+        }
+
+</script>
+}

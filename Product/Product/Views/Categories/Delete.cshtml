@@ -1,0 +1,44 @@
+﻿@using Product.Helpers
+@model Product.Models.Category
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="deleteItemModalLabel">Are you sure you want to delete @Html.DisplayFor(model => model.Name)&iquest;</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    @for (int i = 0; i < Model.Items.Count; i++)
+    {
+        <div class="card">
+            @Html.ImageFor(model => model.Items[i].Image, "", 200, 200)
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayFor(model => model.Items[i].Name)</h5>
+                <p class="card-text">
+                    @Html.DisplayNameFor(model => model.Items[i].Category.Name):&nbsp;@Html.DisplayFor(model => model.Items[i].Category.Name)
+                    <br />
+                    @Html.DisplayNameFor(model => model.Items[i].Description):&nbsp;@Html.DisplayFor(model => model.Items[i].Description)
+                    <br />
+                    @Html.DisplayNameFor(model => model.Items[i].EntryDate):&nbsp;@Html.DisplayFor(model => model.Items[i].EntryDate)
+                    <br />
+                    @Html.DisplayNameFor(model => model.Items[i].Quantity):&nbsp;@Html.DisplayFor(model => model.Items[i].Quantity)
+                </p>
+            </div>
+        </div>
+        <br />
+    }
+</div>
+<div class="modal-footer">
+    @using (Ajax.BeginForm(actionName: "Delete", controllerName: "Categories", null, ajaxOptions: new AjaxOptions() { HttpMethod = "POST", OnSuccess = "", OnFailure = "" }))
+    {
+        @Html.AntiForgeryToken()
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Delete" />
+    }
+</div>
